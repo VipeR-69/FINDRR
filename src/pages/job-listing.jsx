@@ -26,24 +26,29 @@ const JobListing = () => {
 
   return (
     <div>
-      <h1 className='gradient-title font-extrabold text-7xl text-center mt-15 pb-6'>Latest Jobs</h1>
+      <h1 className='gradient-title font-extrabold text-7xl text-center mt-15 pb-5'>Latest Jobs</h1>
 
       {loadingJobs && (
         <BarLoader className='mt-7' width={"100%"} color='#0080FE' />
       )}
 
       {loadingJobs === false && (
-        <div>
+        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10'>
           {jobs.length ?(
             jobs.map((job) => {
-              return <JobCard key={job.id} job={job} />
+              return (
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  savedInit={job?.saved?.length > 0}
+                />
+              );
             })
           ) : (
             <div>No Jobs Found 😞</div>
           )}
         </div>
       )}
-
 
     </div>
 
