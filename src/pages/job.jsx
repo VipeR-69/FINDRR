@@ -1,4 +1,5 @@
 import { getSingleJob, updateHiringStatus } from '@/api/apiJobs';
+import ApplyJobDrawer from '@/components/apply-job';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import useFetch from '@/hooks/use-fetch';
 import { useUser } from '@clerk/clerk-react'
@@ -31,7 +32,7 @@ const JobPage = () => {
     return <BarLoader className='mt-7' width={"100%"} color='#0080FE' />
 
   return (
-    <div className='flex flex-col gap-8 mt-20'>
+    <div className='flex flex-col gap-8 mt-10'>
       <div className='flex flex-col-reverse gap-6 md:flex-row justify-between items-center'>
         <h1 className='gradient-title font-extrabold pb-3 text-4xl sm:text-6xl'>
           {job?.title}
@@ -52,6 +53,8 @@ const JobPage = () => {
         </div>
       </div>
 
+
+      { loadingHiringStatus && <BarLoader className='mt-7' width={"100%"} color='#0080FE' /> }
       {job?.recruiter_id === user?.id && (
         <Select onValueChange={handleStatusChange}>
           <SelectTrigger className={`text-base !text-white w-full cursor-pointer ${job?.isOpen ? "!bg-green-700" : "!bg-red-700"}`}>
@@ -74,6 +77,15 @@ const JobPage = () => {
         source={job?.requirements}
         className='bg-transparent sm:text-lg'
       />
+
+      { job?.recruiter_id !== user?.id && (
+        <ApplyJobDrawer
+          job={job}
+          user={user}
+          fetchJob={fnJob}
+          applied={job?.applications.find((ap) => ap.candidate_id === user.id)}
+        />
+      )}
 
     </div>
   )
