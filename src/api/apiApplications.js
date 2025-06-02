@@ -9,11 +9,11 @@ export async function applyToJob(token, _, jobData) {
     const { error:StorageError } = await supabase.storage.from("resume").upload(fileName, jobData.resume);
     
     if(StorageError){
-        console.error("Error Uploading Resumes : ", StorageError)
+        console.error("Error Uploading Resume : ", StorageError)
         return null;
     }
 
-    const resume = `${supabaseUrl}/storage/v1/object/public/resumes/${fileName}`
+    const resume = `${supabaseUrl}/storage/v1/object/public/resume/${fileName}`
 
     const { data, error } = await supabase.from("applications").insert([
         {
@@ -24,6 +24,23 @@ export async function applyToJob(token, _, jobData) {
 
     if(error){
         console.error("Error Submiting Applicaiton : ", error)
+        return null;
+    }
+    return data;
+}
+
+
+export async function updateApplicationStatus(token, { job_id }, status) {
+    const supabase = await supabaseClient(token);
+
+    const { data, error } = await supabase
+        .from("applications")
+        .update({ status })
+        .eq("job_id", job_id)
+        .select();
+
+    if(error || data.length === 0){
+        console.error("Error Updating Applicaiton Status : ", error)
         return null;
     }
     return data;
