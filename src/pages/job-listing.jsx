@@ -122,7 +122,7 @@ const JobListing = () => {
                 <JobCard
                   key={job.id}
                   job={job}
-                  savedInit={job?.saved?.length > 0}
+                  savedInit={(job?.saved || []).length > 0}
                 />
               );
             })
